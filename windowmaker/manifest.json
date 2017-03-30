@@ -1,0 +1,20 @@
+{
+  "applications": {
+    "gecko": {
+      "id": "tabs-tabs-tabs-windows@mozilla.org",
+      "strict_min_version": "47.0a1"
+    }
+  },
+  "browser_action": {
+      "default_title": "Tabs, windows, tabs, tabs",
+      "default_popup": "tabs.html"
+  },
+  "permissions": [
+    "windows"
+  ],
+  "description": "A list of methods you can perform on a tab.",
+  "homepage_url": "https://github.com/mdn/webextensions-examples/tree/master/tabs-tabs-tabs",
+  "manifest_version": 2,
+  "name": "Tabs, windows,tabs, tabs",
+  "version": "1.0"
+}
