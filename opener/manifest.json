@@ -1,0 +1,13 @@
+{
+  "background": {
+    "scripts": ["tabs.js"]
+  },
+  "permissions": [
+    "activeTab",
+    "tabs"
+  ],
+  "description": "An experiment into severing openers.",
+  "manifest_version": 2,
+  "name": "Tab openers",
+  "version": "1.0"
+}
