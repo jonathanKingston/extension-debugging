@@ -1,6 +1,6 @@
 {
   "background": {
-    "scripts": ["tabs.js"]
+    "scripts": ["background.js"]
   },
   "permissions": [
     "cookies",
@@ -11,8 +11,8 @@
     "<all_urls>",
     "tabs"
   ],
-  "description": "An experiment for containers.",
+  "description": "An experiment for detecting IDN domains.",
   "manifest_version": 2,
-  "name": "Container assign",
+  "name": "IDN detect",
   "version": "1.0"
 }
