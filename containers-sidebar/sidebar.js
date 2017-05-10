@@ -43,6 +43,7 @@ function debug() {
 const tabManager = {
   currentContainer: [],
   currentTabs: [],
+  pinnedTabs: [],
   sidebar: null,
 
   init() {
@@ -69,13 +70,13 @@ const tabManager = {
     const refreshTabs = (tab) => {
       this.loadTabs();
     }
+    browser.tabs.onRemoved.addListener(refreshTabs);
 /* not sure if I need these yet
     browser.tabs.onActivated.addListener(refreshTabs);
     browser.tabs.onAttached.addListener(refreshTabs);
     browser.tabs.onCreated.addListener(refreshTabs);
     browser.tabs.onDetached.addListener(refreshTabs);
     browser.tabs.onMoved.addListener(refreshTabs);
-    browser.tabs.onRemoved.addListener(refreshTabs);
     browser.tabs.onReplaced.addListener(refreshTabs);
     browser.tabs.onUpdated.addListener(refreshTabs);
 */
@@ -87,7 +88,14 @@ const tabManager = {
       windowId: browser.windows.WINDOW_ID_CURRENT
     }).then((tabs) => {
       debug('tab', tabs);
-      this.currentTabs = tabs;
+      this.pinnedTabs = [];
+      this.currentTabs = tabs.filter((tab) => {
+        if (tab.pinned) {
+          this.pinnedTabs.push(tab);
+          return false;
+        }
+        return true;
+      });
       return this.renderTabs();
     });
   },
@@ -106,7 +114,7 @@ const tabManager = {
   },
 
   render() {
-    debug('hey', this.currentContainers, this.currentTabs);
+    debug('rendering', this.currentContainers, this.currentTabs);
     this.sidebar = document.getElementById("sidebarContainer");
     const fragment = document.createDocumentFragment();
   
@@ -114,10 +122,16 @@ const tabManager = {
       const containerElement = document.createElement("section");
       containerElement.className = "closed";
       containerElement.innerHTML = escaped`<div class="container">
-        <div class="container-name">${container.name}</div>
+        <div class="usercontext-icon"></div>
+        <div class="container-name">
+          ${container.name}
+        </div>
         <span class="tab-count"></span>
+        <div class="pinned-tabs"></div>
         <button class="new-tab"></button>
       </div>`;
+      containerElement.setAttribute("data-identity-icon", container.icon);
+      containerElement.setAttribute("data-identity-color", container.color);
       containerElement.setAttribute("data-cookie-store-id", container.cookieStoreId);
       containerElement.addEventListener("click", this);
       const tabContainerElement = document.createElement("div");
@@ -151,6 +165,9 @@ const tabManager = {
   },
 
   tabActivate(tabElement) {
+    if (!tabElement) {
+      return;
+    }
     const tabId = tabElement.getAttribute("data-tab-id");
     if (tabId) {
       browser.tabs.update(Number(tabId), {
@@ -192,16 +209,18 @@ const tabManager = {
 
   renderTabs() {
     const containerTabs = {};
+    const pinnedTabs = {};
     let activeTab;
-  
-    this.currentTabs.forEach((tab) => {
+
+    const makeTab = (storage, tab, pinned) => {
       const cookieStoreId = tab.cookieStoreId;
-      if (!(cookieStoreId in containerTabs)) {
-        containerTabs[cookieStoreId] = document.createDocumentFragment();
+      if (!(cookieStoreId in storage)) {
+        storage[cookieStoreId] = document.createDocumentFragment();
       }
       const tabElement = document.createElement("div");
       tabElement.className = "tab-item";
       tabElement.setAttribute("data-tab-id", tab.id);
+      debug("Found tab", tab);
       if (tab.active) {
         tabElement.classList.add("active");
         activeTab = tabElement;
@@ -210,11 +229,22 @@ const tabManager = {
       if (tab.favIconUrl) {
         favIconUrl = tab.favIconUrl;
       }
-      tabElement.innerHTML = escaped`
-        <img src="${favIconUrl}" />
-        <div class="tab-title">${tab.title}</div>
-        <button class="close-tab"></button>`;
-      containerTabs[cookieStoreId].appendChild(tabElement);
+      if (pinned) {
+        tabElement.innerHTML = escaped`<img src="${favIconUrl}" />`;
+      } else {
+        tabElement.innerHTML = escaped`
+          <img src="${favIconUrl}" />
+          <div class="tab-title">${tab.title}</div>
+          <button class="close-tab"></button>`;
+      }
+      storage[cookieStoreId].appendChild(tabElement);
+    };
+  
+    this.currentTabs.forEach((tab) => {
+      makeTab(containerTabs, tab);
+    });
+    this.pinnedTabs.forEach((tab) => {
+      makeTab(pinnedTabs, tab, true);
     });
   
     [...document.querySelectorAll('section')].forEach((section) => {
@@ -226,6 +256,12 @@ const tabManager = {
         tabCount.innerText = `(${containerTabs[cookieStoreId].childNodes.length})`;
         tabContainer.innerHTML = "";
         tabContainer.appendChild(containerTabs[cookieStoreId]);
+      }
+
+      if (cookieStoreId in pinnedTabs) {
+        const pinnedSection = section.querySelector(".pinned-tabs");
+        pinnedSection.innerHTML = "";
+        pinnedSection.appendChild(pinnedTabs[cookieStoreId]);
       }
     });
 

@@ -12,6 +12,6 @@ Opens a sidebar to manage containers
 - Load Temporary Addon
 - Click the manifest file in this directory
 
-# What it shows
+# TODO
 
-Demonstration of various tabs API functions.
+- Prevent tab click from changing scroll position
