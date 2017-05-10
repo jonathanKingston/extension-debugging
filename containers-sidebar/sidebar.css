@@ -83,6 +83,13 @@ section {
   border-inline-start: solid 4px var(--in-content-border-highlight);
 }
 
+.tab-item.dragging {
+  border: 2px dashed #000;
+}
+.tab-item.over {
+  border-block-end: 1px solid fuchsia;
+}
+
 .tab-title {
   white-space: nowrap;
   overflow: hidden;

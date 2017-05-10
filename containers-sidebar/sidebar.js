@@ -45,6 +45,8 @@ const tabManager = {
   currentTabs: [],
   pinnedTabs: [],
   sidebar: null,
+  draggedOver: null,
+  draggingTab: null,
 
   init() {
     this.sidebar = document.getElementById("sidebarContainer");
@@ -65,22 +67,45 @@ const tabManager = {
       });
     })
 
-    // We could potentially stale check here but it might get out of date
-    // tracking the tabs state in memory might be more performant though
-    const refreshTabs = (tab) => {
-      this.loadTabs();
-    }
-    browser.tabs.onRemoved.addListener(refreshTabs);
+    browser.tabs.onRemoved.addListener((removed) => {
+      const tabElement = this.getTabById(removed);
+      if (tabElement) {
+        tabElement.classList.add("active");
+      }
+      const sectionElement = tabElement.closest("section");
+      this.containerOpen(sectionElement);
+    });
+    browser.tabs.onActivated.addListener((activated) => {
+      [...this.sidebar.querySelectorAll(".tab-item.active")].forEach((tab) => {
+        tab.classList.remove("active");
+      });
+      
+      const tabElement = this.getTabById(activated);
+      if (tabElement) {
+        tabElement.remove();
+      }
+    });
 /* not sure if I need these yet
     browser.tabs.onActivated.addListener(refreshTabs);
     browser.tabs.onAttached.addListener(refreshTabs);
     browser.tabs.onCreated.addListener(refreshTabs);
     browser.tabs.onDetached.addListener(refreshTabs);
-    browser.tabs.onMoved.addListener(refreshTabs);
     browser.tabs.onReplaced.addListener(refreshTabs);
     browser.tabs.onUpdated.addListener(refreshTabs);
 */
+    // We could potentially stale check here but it might get out of date
+    // tracking the tabs state in memory might be more performant though
+    const refreshTabs = (tab) => {
+      this.loadTabs();
+    }
+    browser.tabs.onMoved.addListener(refreshTabs);
+    // Once I handle everything this can be removed
+    // This overfires right now but clears up stale tabs
     browser.tabs.onUpdated.addListener(refreshTabs);
+  },
+
+  getTabById(id) {
+    return this.sidebar.querySelector(`.tab-item[data-tab-id="${id}"]`);
   },
 
   loadTabs() {
@@ -159,7 +184,8 @@ const tabManager = {
       sectionElement.classList.remove("closed");
       if (toggle) {
         // Lets open the first tab on user click
-        this.tabActivate(sectionElement.querySelector('.tab-item'));
+        // This was annoying
+        //this.tabActivate(sectionElement.querySelector('.tab-item'));
       }
     }
   },
@@ -203,7 +229,38 @@ const tabManager = {
           }
           this.containerOpen(sectionElement, true);
         }
-        break
+        break;
+      case "dragstart":
+        this.draggingTab = e.target;
+        this.draggingTab.classList.add("dragging");
+        e.dataTransfer.setData("text/plain", e.target.id);
+        break;
+      case "dragover":
+        if (this.draggedOver === e.target) {
+          return;
+        }
+        if (this.draggedOver) {
+          this.draggedOver.classList.remove("over");
+        }
+
+        const thisDraggingOverTabElement = e.target.closest(".tab-item");
+        thisDraggingOverTabElement.classList.add("over");
+        this.draggedOver = thisDraggingOverTabElement; //e.target;
+        break;
+      case "dragend":
+        this.draggingTab.classList.remove("dragging");
+        const tabId = Number(this.draggingTab.getAttribute("data-tab-id"));
+        if (tabId && this.draggedOver) {
+          const draggingOverTabId = Number(this.draggedOver.getAttribute("data-tab-id"));
+          browser.tabs.get(draggingOverTabId).then((draggingOverTab) => {
+            browser.tabs.move(tabId, {
+              index: draggingOverTab.index + 1
+            });
+          });
+        }
+        this.draggingTab = null;
+        this.draggedOver = null;
+        break;
     }
   },
 
@@ -219,7 +276,11 @@ const tabManager = {
       }
       const tabElement = document.createElement("div");
       tabElement.className = "tab-item";
+      tabElement.setAttribute("draggable", true);
       tabElement.setAttribute("data-tab-id", tab.id);
+      tabElement.addEventListener("dragstart", this);
+      tabElement.addEventListener("dragover", this);
+      tabElement.addEventListener("dragend", this);
       debug("Found tab", tab);
       if (tab.active) {
         tabElement.classList.add("active");
