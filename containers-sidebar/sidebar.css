@@ -1,0 +1,86 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: rgb(66, 79, 90);
+  color: rgb(242, 242, 242);
+  font: message-box;
+  -moz-user-select: none;
+}
+
+section {
+  margin: 0 0 1rem 0;
+}
+
+.container {
+  display: flex;
+  padding: 0.25rem;
+  align-items: center;
+  cursor: pointer;
+}
+
+.container:hover {
+  background-color: rgb(94, 105, 114);
+}
+
+.close-tab, .new-tab {
+  margin-left: auto;
+  border: none;
+  height: 16px;
+  cursor: pointer;
+}
+
+.new-tab {
+  background: no-repeat url("chrome://browser/skin/tabbrowser/newtab-inverted.svg");
+}
+
+.close-tab {
+  background-image: -moz-image-rect(url("chrome://global/skin/icons/close.svg"), 0, 96, 16, 80);
+}
+
+.tab-item:hover .close-tab {
+  background-image: -moz-image-rect(url("chrome://global/skin/icons/close.svg"), 0, 80, 16, 64);
+}
+
+.container-name {
+  font-size: 1.25rem;
+}
+
+.tab-count {
+  padding: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.tab-container {
+  background: rgb(251, 251, 251);
+  color: rgb(51, 51, 51);
+  padding: 0.25rem 0;
+}
+
+.closed .tab-container {
+  display: none;
+}
+
+.tab-item {
+  cursor: pointer;
+  margin: 0 0 0.5rem 0;
+  padding: 2px;
+  display: flex;
+}
+
+.tab-item img {
+  inline-size: 16px;
+  block-size: 16px;
+  margin: 0 4px 0 0;
+}
+
+.tab-item.active {
+  background-color: #ccc;
+}
+.tab-item:hover {
+  background-color: #eee;
+}
+
