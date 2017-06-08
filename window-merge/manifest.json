@@ -1,0 +1,16 @@
+{
+  "permissions": [
+    "windows",
+    "tabs",
+    "contextMenus"
+  ],
+  "description": "A list of methods you can perform on a tab.",
+  "homepage_url": "https://github.com/mdn/webextensions-examples/tree/master/tabs-tabs-tabs",
+  "manifest_version": 2,
+  "name": "Window merge",
+  "version": "1.0",
+
+  "background": {
+    "scripts": ["background.js"]
+  }
+}
