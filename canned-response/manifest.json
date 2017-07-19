@@ -1,0 +1,26 @@
+{
+  "browser_action": {
+    "default_title": "Canned response",
+    "default_popup": "index.html"
+  },
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "applications": {
+    "gecko": {
+      "id": "canned-response@mozilla.org",
+      "strict_min_version": "54.0a1"
+    }
+  },
+  "permissions": [
+    "storage",
+    "<all_urls>",
+    "activeTab",
+    "tabs",
+    "contextMenus"
+  ],
+  "description": "Canned responsed to paste into fields",
+  "manifest_version": 2,
+  "name": "Canned response",
+  "version": "1.0"
+}
