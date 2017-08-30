@@ -1,0 +1,20 @@
+{
+  "browser_action": {
+    "browser_style": true,
+    "default_icon": {
+      "16": "manage-16.png",
+      "32": "manage-32.png"
+    },
+    "default_title": "Containers search",
+    "default_popup": "page.html"
+  },
+  "permissions": [
+    "cookies",
+    "contextualIdentities",
+    "tabs"
+  ],
+  "description": "An experiment showing all containers APIs",
+  "manifest_version": 2,
+  "name": "Container menu",
+  "version": "1.0"
+}
