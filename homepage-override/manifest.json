@@ -1,0 +1,18 @@
+{
+  "permissions": [
+    "cookies",
+    "storage",
+    "webRequest",
+    "webRequestBlocking",
+    "contextualIdentities",
+    "<all_urls>",
+    "tabs"
+  ],
+  "chrome_settings_overrides" : {
+    "homepage": "https://developer.mozilla.org/"
+  },
+  "description": "An experiment showing all containers APIs",
+  "manifest_version": 2,
+  "name": "homer",
+  "version": "1.0"
+}

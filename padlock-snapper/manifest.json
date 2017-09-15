@@ -1,0 +1,15 @@
+{
+  "content_scripts": [
+    {
+      "js": ["tabs.js"],
+      "matches": ["http://*/*"]
+    }
+  ],
+  "permissions": [
+    "<all_urls>"
+  ],
+  "description": "An experiment for padlocks.",
+  "manifest_version": 2,
+  "name": "padlocks",
+  "version": "1.0"
+}
