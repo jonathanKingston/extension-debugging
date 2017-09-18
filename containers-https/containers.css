@@ -20,7 +20,6 @@ menu > li {
 
 .icon {
   border: 0;
-  mask-size: cover !important;
   block-size: 20px;
   inline-size: 20px;
   margin-inline-end: 6px;
@@ -80,7 +79,7 @@ menu > li > .toggle {
 }
 
 button {
-  -moz-appearance: none;
+  appearance: none;
   background: url('img/container-newtab.svg');
   filter: url('img/filters.svg#fill');
   fill: #979797;
@@ -90,6 +89,7 @@ button {
   margin-inline-start: 6px;
 }
 
-button:hover {
+button:hover,
+button:fous {
   fill: #0094fb;
 }

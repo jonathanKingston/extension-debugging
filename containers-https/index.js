@@ -1,14 +1,14 @@
-const containersSearch = {
+class containersHTTPS {
   createIcon(container) {
     const icon = document.createElement("div");
 
-    icon.classList.add(`container-color-${container.color}`, "icon");
+    icon.classList.add("icon");
     const iconUrl = container.iconUrl || "img/blank-tab.svg";
     // Should handle 55+56 lack of icons here
-    icon.style.mask = `url(${iconUrl})`;
+    icon.style.mask = `url(${iconUrl}) top left / contain`;
     icon.style.background = container.colorCode || "#000";
     return icon;
-  },
+  }
 
   async createToggle(container) {
     const toggle = document.createElement("input");
@@ -26,7 +26,7 @@ const containersSearch = {
     toggle.dataset.action = "toggle";
 
     return toggle;
-  },
+  }
 
   createNewTab(container) {
     const newTabButton = document.createElement("button");
@@ -38,7 +38,7 @@ const containersSearch = {
     newTabButton.dataset.action = "new-tab";
 
     return newTabButton;
-  },
+  }
 
   async createRow(container) {
     const li = document.createElement("li");
@@ -48,17 +48,17 @@ const containersSearch = {
     li.appendChild(this.createNewTab(container));
 
     return li;
-  },
+  }
 
   stateKey(cookieStoreId) {
     return `state-${cookieStoreId}`;
-  },
+  }
 
   async getState(cookieStoreId) {
     const stateKey = this.stateKey(cookieStoreId);
     const states = await browser.storage.local.get([stateKey]);
     return states[stateKey];
-  },
+  }
 
   async storeState(cookieStoreId, checked) {
     console.log("storing state", cookieStoreId, checked);
@@ -66,7 +66,7 @@ const containersSearch = {
     return browser.storage.local.set({
       [stateKey]: checked
     });
-  },
+  }
 
   handleEvent(event) {
     const button = event.target;
@@ -81,9 +81,9 @@ const containersSearch = {
         this.storeState(cookieStoreId, button.checked);
         break;
     }
-  },
+  }
 
-  init() {
+  constructor() {
     this.urlElement = document.getElementById("search-field");
     const rebuildEvent = () => {
       this.rebuildMenu();
@@ -95,7 +95,7 @@ const containersSearch = {
       browser.contextualIdentities.onCreated.addListener(rebuildEvent);
     }
     this.rebuildMenu();
-  },
+  }
 
   async rebuildMenu() {
     const containers = await browser.contextualIdentities.query({});
@@ -118,4 +118,4 @@ const containersSearch = {
   }
 };
 
-containersSearch.init();
+new containersHTTPS();
