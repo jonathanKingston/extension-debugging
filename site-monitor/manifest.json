@@ -1,0 +1,24 @@
+{
+  "permissions": [
+    "<all_urls>",
+    "tabs",
+    "webRequest",
+    "webNavigation"
+  ],
+  "background": {
+    "scripts": [
+      "ext-libs/dexie.js",
+      "background/pageData.js",
+      "background/siteData.js",
+      "background/tabTracker.js"
+    ]
+  },
+  "browser_action": {
+    "default_title": "Observatory score",
+    "default_popup": "browserAction/index.html"
+  },
+  "description": "An experiment for tab requests",
+  "manifest_version": 2,
+  "name": "Observatory score",
+  "version": "1.0"
+}

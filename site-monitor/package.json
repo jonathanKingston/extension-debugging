@@ -1,0 +1,16 @@
+{
+  "name": "site-monitor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm install && npm run createlib && web-ext build --overwrite-dest",
+    "createlib": "rm -rf ext-libs/ && mkdir ext-libs && cp node_modules/dexie/dist/dexie.js ext-libs"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dexie": "^1.5.1"
+  }
+}
