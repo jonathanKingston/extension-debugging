@@ -80,9 +80,8 @@ menu > li > .toggle {
 
 button {
   appearance: none;
-  background: url('img/container-newtab.svg');
-  filter: url('img/filters.svg#fill');
-  fill: #979797;
+  background: #979797;
+  mask: url('img/container-newtab.svg') top left / contain;
   border: none;
   min-inline-size: 20px;
   margin-inline-end: 6px;
@@ -90,6 +89,6 @@ button {
 }
 
 button:hover,
-button:fous {
-  fill: #0094fb;
+button:focus {
+  background: #0094fb;
 }

@@ -4,7 +4,6 @@ class containersHTTPS {
 
     icon.classList.add("icon");
     const iconUrl = container.iconUrl || "img/blank-tab.svg";
-    // Should handle 55+56 lack of icons here
     icon.style.mask = `url(${iconUrl}) top left / contain`;
     icon.style.background = container.colorCode || "#000";
     return icon;
@@ -56,7 +55,7 @@ class containersHTTPS {
 
   async getState(cookieStoreId) {
     const stateKey = this.stateKey(cookieStoreId);
-    const states = await browser.storage.local.get([stateKey]);
+    const states = await browser.storage.local.get(stateKey);
     return states[stateKey];
   }
 
@@ -83,17 +82,24 @@ class containersHTTPS {
     }
   }
 
-  constructor() {
+  /**
+   * Do some house keeping to clean up storage
+   */
+  removeContainer(cookieStoreId) {
+    browser.storage.local.remove(this.stateKey(cookieStoreId));
+  }
+
+  constructor(cookieStoreId) {
     this.urlElement = document.getElementById("search-field");
     const rebuildEvent = () => {
       this.rebuildMenu();
     };
-    // Support 55+56 Firefox
-    if (browser.contextualIdentities.onRemoved) {
-      browser.contextualIdentities.onRemoved.addListener(rebuildEvent);
-      browser.contextualIdentities.onUpdated.addListener(rebuildEvent);
-      browser.contextualIdentities.onCreated.addListener(rebuildEvent);
-    }
+    browser.contextualIdentities.onRemoved.addListener((container) => {
+      this.removeContainer(container.cookieStoreId);
+      rebuildEvent();
+    });
+    browser.contextualIdentities.onUpdated.addListener(rebuildEvent);
+    browser.contextualIdentities.onCreated.addListener(rebuildEvent);
     this.rebuildMenu();
   }
 
