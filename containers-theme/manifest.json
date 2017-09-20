@@ -1,0 +1,17 @@
+{
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "permissions": [
+    "cookies",
+    "storage",
+    "theme",
+    "contextualIdentities",
+    "<all_urls>",
+    "tabs"
+  ],
+  "description": "An experiment showing all containers APIs",
+  "manifest_version": 2,
+  "name": "Container https",
+  "version": "1.0"
+}
